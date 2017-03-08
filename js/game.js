@@ -8,6 +8,16 @@ var startZoom = 14.91;
 var minZoom = 6;
 var maxZoom = 19;
 
+var testPoly = [
+    [52.3929931,13.0934414],
+    [52.3929940,13.0934412],
+    [52.3929940,13.0934000],
+    [52.3929931,13.0934000]
+];
+
+var primaryColor = '#a44';
+var darkerColor = '#820';
+
 // globals
 var map;
 var posPopup;
@@ -28,18 +38,13 @@ function init() {
 	var marker = L.marker(startCoords).addTo(map);
 
 	var circle = L.circle(startCoords, {
-		color: '#2f8',
-		fillColor: '#6fb',
+		color: primaryColor,
+		fillColor: darkerColor,
 		fillOpacity: 0.5,
 		radius: 100
 	}).addTo(map);
 
-	var polygon = L.polygon([
-		[51, 0],
-		[51, 0.01],
-		[51.01, 0.01],
-		[51.01, 0]
-	]).addTo(map);
+	var polygon = L.polygon(testPoly).addTo(map);
 
 	// popups for markers and elements
 	marker.bindPopup("<b>This is a test</b><br>Testerino 3000").openPopup();
