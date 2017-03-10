@@ -12,7 +12,7 @@ var maxZoom = 19;
 // game settings
 var enemyCount = 8;
 var enemyDist = 0.0005;
-var updateMS = 500;
+var updateMS = 5;
 
 // colors
 var primaryCircleColor = '#3af';
@@ -80,8 +80,8 @@ function update() {
 	for(var e = 0; e < enemies.length; e++) {
 		var enemy = enemies[e];
 		var curPos = enemyPositions[e];
-		var xDiff = 0.0001;
-		var yDiff = 0.0001;
+		var xDiff = (Math.random()*2 - 1) * 10 * 0.000001;
+		var yDiff = (Math.random()*2 - 1) * 10 * 0.000001;
 		var newPos = [curPos[0] + xDiff, curPos[1] + yDiff];
 		enemy.setLatLng(newPos);
 		enemyPositions[e] = newPos;
