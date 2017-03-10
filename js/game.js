@@ -9,16 +9,10 @@ var startCoords = new L.LatLng(startPos[0], startPos[1], startZoom);
 var minZoom = 6;
 var maxZoom = 19;
 
-var testPoly = [
-    [52.3929931, 13.0934414],
-    [52.3929940, 13.0934412],
-    [52.3929940, 13.0934000],
-    [52.3929931, 13.0934000]
-];
-
 // game settings
 var enemyCount = 8;
 var enemyDist = 0.0005;
+var updateMS = 500;
 
 // colors
 var primaryCircleColor = '#3af';
@@ -29,6 +23,8 @@ var map;
 var posPopup;
 var enemies = [];
 var enemyPositions = [];
+var enemyPolygon;
+var updateInterval;
 
 function init() {
 	map = L.map('map').setView(startCoords, 13);
@@ -55,7 +51,7 @@ function init() {
 	}
 
 	// render enemy polygon
-	var enemyPolygon = L.polygon(enemyPositions).addTo(map);
+	enemyPolygon = L.polygon(enemyPositions).addTo(map);
 
 	// examples of decoration elements
 	var marker = L.marker(startCoords).addTo(map);
@@ -67,17 +63,31 @@ function init() {
 		radius: 100
 	}).addTo(map);
 
-	var polygon = L.polygon(testPoly).addTo(map);
-
 	// popups for markers and elements
 	marker.bindPopup("<b>This is a test</b><br>Testerino 3000").openPopup();
 	circle.bindPopup("Circling around");
-	polygon.bindPopup("Polygon schmolygon");
 
 	posPopup = L.popup();
 
 	// event bindings
 	map.on('click', onMapClick);
+
+	// enable update loop
+	updateInterval = setInterval(update, updateMS);
+}
+
+function update() {
+	for(var e = 0; e < enemies.length; e++) {
+		var enemy = enemies[e];
+		var curPos = enemyPositions[e];
+		var xDiff = 0.0001;
+		var yDiff = 0.0001;
+		var newPos = [curPos[0] + xDiff, curPos[1] + yDiff];
+		enemy.setLatLng(newPos);
+		enemyPositions[e] = newPos;
+	}
+
+	enemyPolygon.setLatLngs(enemyPositions);
 }
 
 function onMapClick(e) {
