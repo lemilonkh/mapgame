@@ -2,28 +2,35 @@
 // (c) 2017 by Milan Gruner
 
 // constants
-var startCoords = new L.LatLng(52.3929931,13.0934414);
-var startZoom = 14.91;
+var startPos = [52.3929931, 13.0934414];
+var startZoom = 17;
+var startCoords = new L.LatLng(startPos[0], startPos[1], startZoom);
 
 var minZoom = 6;
 var maxZoom = 19;
 
 var testPoly = [
-    [52.3929931,13.0934414],
-    [52.3929940,13.0934412],
-    [52.3929940,13.0934000],
-    [52.3929931,13.0934000]
+    [52.3929931, 13.0934414],
+    [52.3929940, 13.0934412],
+    [52.3929940, 13.0934000],
+    [52.3929931, 13.0934000]
 ];
 
-var primaryColor = '#a44';
-var darkerColor = '#820';
+// game settings
+var enemyCount = 8;
+var enemyDist = 0.0005;
+
+// colors
+var primaryCircleColor = '#3af';
+var darkerCircleColor = '#16a';
 
 // globals
 var map;
 var posPopup;
+var enemies = [];
+var enemyPositions = [];
 
 function init() {
-	console.log('init');
 	map = L.map('map').setView(startCoords, 13);
 
 	var mapUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
@@ -34,12 +41,28 @@ function init() {
 	map.setView(startCoords, startZoom);
 	map.addLayer(mapLayer);
 
+	// create enemies
+	var angleSlice = (2 * Math.PI) / enemyCount;
+	var currentAngle = 0;
+	for(var i = 0; i < enemyCount; i++) {
+		var xDiff = Math.sin(currentAngle) * enemyDist;
+		var yDiff = Math.cos(currentAngle) * enemyDist;
+		var enemyPos = [startPos[0]+xDiff, startPos[1]+yDiff];
+		enemies[i] = L.marker(enemyPos).addTo(map);
+		enemyPositions[i] = enemyPos;
+
+		currentAngle += angleSlice;
+	}
+
+	// render enemy polygon
+	var enemyPolygon = L.polygon(enemyPositions).addTo(map);
+
 	// examples of decoration elements
 	var marker = L.marker(startCoords).addTo(map);
 
 	var circle = L.circle(startCoords, {
-		color: primaryColor,
-		fillColor: darkerColor,
+		color: primaryCircleColor,
+		fillColor: darkerCircleColor,
 		fillOpacity: 0.5,
 		radius: 100
 	}).addTo(map);
